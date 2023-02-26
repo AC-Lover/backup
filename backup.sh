@@ -31,7 +31,7 @@ sudo apt install zip -y
 sudo apt install curl -y
 
 cat >/root/ac-backup.sh <<EOL
-zip -r /root/ac-backup.zip /root/marzban/* /var/lib/marzban/*
+$ZIP
 curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
