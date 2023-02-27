@@ -36,4 +36,5 @@ curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F do
 EOL
 
 { crontab -l -u root; echo "0 */${cron} * * * /bin/bash /root/ac-backup.sh >/dev/null 2>&1"; } | crontab -u root -
+bash /root/ac-backup.sh
 echo 'Done'
