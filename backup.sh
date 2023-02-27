@@ -37,4 +37,4 @@ EOL
 
 { crontab -l -u root; echo "0 */${cron} * * * /bin/bash /root/ac-backup.sh >/dev/null 2>&1"; } | crontab -u root -
 bash /root/ac-backup.sh
-echo 'Done'
+echo "\nDone"
