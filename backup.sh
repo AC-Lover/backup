@@ -3,7 +3,7 @@
 # Bot token
 # گرفتن توکن ربات از کاربر و ذخیره آن در متغیر tk
 while [[ -z "$tk" ]]; do
-    read -p 'Bot token: ' -n 1 tk
+    read -p 'Bot token: ' tk
     if [[ $tk == $'\0' ]]; then
         echo "Invalid input. Token cannot be empty."
         unset tk
@@ -13,7 +13,7 @@ done
 # Chat id
 # گرفتن Chat ID از کاربر و ذخیره آن در متغیر chatid
 while [[ -z "$chatid" ]]; do
-    read -p 'Chat id: ' -n 1 chatid
+    read -p 'Chat id: ' chatid
     if [[ $chatid == $'\0' ]]; then
         echo "Invalid input. Chat id cannot be empty."
         unset chatid
@@ -52,7 +52,7 @@ done
 # x-ui or marzban or hiddify
 # گرفتن نوع نرم افزاری که می‌خواهیم پشتیبانی از آن بگیریم و ذخیره آن در متغیر xmh
 while [[ -z "$xmh" ]]; do
-    read -p 'x-ui or marzban or hiddify? [x/m/h] : ' -n 1 xmh
+    read -p 'x-ui or marzban or hiddify? [x/m/h] : ' xmh
     if [[ $xmh == $'\0' ]]; then
         echo "Invalid input. Please choose x, m or h."
         unset xmh
