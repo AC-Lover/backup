@@ -65,7 +65,15 @@ done
 # m backup
 # ساخت فایل پشتیبانی برای نرم‌افزار Marzban و ذخیره آن در فایل ac-backup.zip
 if [[ "$xmh" == "m" ]]; then
-ZIP="zip -r /root/ac-backup.zip /root/marzban/* /var/lib/marzban/*"
+
+if [ -d /opt/marzban ]; then
+dir="/opt/marzban/*"
+else
+dir="/root/marzban/*"
+fi
+
+
+ZIP="zip -r /root/ac-backup.zip ${dir} /var/lib/marzban/*"
 ACLover="marzban backup"
 
 # x-ui backup
