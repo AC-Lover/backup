@@ -87,11 +87,15 @@ ACLover="x-ui backup"
 elif [[ "$xmh" == "h" ]]; then
 ZIP=$(cat <<EOF
 cd /opt/hiddify-config/hiddify-panel/
+if [ $(find /opt/hiddify-config/hiddify-panel/backup -type f | wc -l) -gt 100 ]; then
+  find /opt/hiddify-config/hiddify-panel/backup -type f -delete
+fi
 python3 -m hiddifypanel backup
 cd /opt/hiddify-config/hiddify-panel/backup
 latest_file=\$(ls -t *.json | head -n1)
 rm -f /root/ac-backup.zip
 zip /root/ac-backup.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_file
+
 EOF
 )
 ACLover="hiddify backup"
