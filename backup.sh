@@ -105,6 +105,10 @@ $ZIP
 curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
+
+# remove cronjobs
+sudo crontab -l | grep -v '/root/ac-backup.sh' | crontab -
+
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
 { crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup.sh >/dev/null 2>&1"; } | crontab -u root -
