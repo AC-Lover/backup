@@ -82,7 +82,8 @@ cd /opt/hiddify-config/hiddify-panel/
 python3 -m hiddifypanel backup
 cd /opt/hiddify-config/hiddify-panel/backup
 latest_file=\$(ls -t *.json | head -n1)
-zip /root/ac-backup.zip /opt/hiddify-config/hiddify-panel/backup/\${latest_file}
+rm -f /root/ac-backup.zip
+zip /root/ac-backup.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_file
 EOF
 )
 ACLover="hiddify backup"
