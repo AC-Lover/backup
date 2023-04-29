@@ -62,68 +62,29 @@ while [[ -z "$xmh" ]]; do
     fi
 done
 
-while [[ -z "$crontabs" ]]; do
-    read -p 'Would you like the previous crontabs to be cleared? [y|n] : ' crontabs
-    if [[ $crontabs == $'\0' ]]; then
-        echo "Invalid input. Please choose y or n."
-        unset crontabs
-    elif [[ ! $xmh =~ ^[yn]$ ]]; then
-        echo "${crontabs} is not a valid option. Please choose y or n."
-        unset crontabs
-    fi
-done
-
-if [[ "$xmh" == "y" ]]; then
-# remove cronjobs
-sudo crontab -l | grep -vE '/root/ac-backup.sh|/root/ac-backup.+\.sh' | crontab -
-fi
-
-
 # m backup
 # ساخت فایل پشتیبانی برای نرم‌افزار Marzban و ذخیره آن در فایل ac-backup.zip
 if [[ "$xmh" == "m" ]]; then
 
-if dir=$(find /opt /root -type d -iname "marzban" -print -quit); then
-  echo "The folder exists at $dir"
+if [ -d /opt/marzban ]; then
+dir="/opt/marzban/*"
 else
-  echo "The folder does not exist."
-  exit 1
+dir="/root/marzban/*"
 fi
 
 
-ZIP="zip -r /root/ac-backup-m.zip ${dir} /var/lib/marzban/*"
+ZIP="zip -r /root/ac-backup.zip ${dir} /var/lib/marzban/*"
 ACLover="marzban backup"
 
 # x-ui backup
 # ساخت فایل پشتیبانی برای نرم‌افزار X-UI و ذخیره آن در فایل ac-backup.zip
 elif [[ "$xmh" == "x" ]]; then
-
-if dbDir=$(find /etc -type d -iname "x-ui*" -print -quit); then
-  echo "The folder exists at $dbDir"
-else
-  echo "The folder does not exist."
-  exit 1
-fi
-
-if configDir=$(find /usr/local -type d -iname "x-ui*" -print -quit); then
-  echo "The folder exists at $configDir"
-else
-  echo "The folder does not exist."
-  exit 1
-fi
-
-ZIP="zip /root/ac-backup-x.zip ${dbDir}/x-ui.db ${configDir}/config.json"
+ZIP="zip /root/ac-backup.zip /etc/x-ui/x-ui.db /usr/local/x-ui/bin/config.json"
 ACLover="x-ui backup"
 
 # hiddify backup
 # ساخت فایل پشتیبانی برای نرم‌افزار Hiddify و ذخیره آن در فایل ac-backup.zip
 elif [[ "$xmh" == "h" ]]; then
-
-if ! find /opt/hiddify-config/hiddify-panel/ -type d -iname "backup" -print -quit; then
-  echo "The folder does not exist."
-  exit 1
-fi
-
 ZIP=$(cat <<EOF
 cd /opt/hiddify-config/hiddify-panel/
 if [ $(find /opt/hiddify-config/hiddify-panel/backup -type f | wc -l) -gt 100 ]; then
@@ -133,7 +94,7 @@ python3 -m hiddifypanel backup
 cd /opt/hiddify-config/hiddify-panel/backup
 latest_file=\$(ls -t *.json | head -n1)
 rm -f /root/ac-backup.zip
-zip /root/ac-backup-h.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_file
+zip /root/ac-backup.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_file
 
 EOF
 )
@@ -144,7 +105,7 @@ exit 1
 fi
 
 export IP=$(hostname -I)
-caption="${caption}\n\n${ACLover}\n<code>${IP}</code>\nCreated by @AC_Lover - https://github.com/AC-Lover/backup"
+caption="${caption}\n\n${ACLover}\n<code>${IP}</code>"
 
 # install zip
 # نصب پکیج zip
@@ -152,17 +113,18 @@ sudo apt install zip -y
 
 # send backup to telegram
 # ارسال فایل پشتیبانی به تلگرام
-cat > "/root/ac-backup-${xmh}.sh" <<EOL
+cat >/root/ac-backup.sh <<EOL
 $ZIP
-curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.telegram.org/bot${tk}/sendDocument
+curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
 
-
+# remove cronjobs
+sudo crontab -l | grep -v '/root/ac-backup.sh' | crontab -
 
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
-{ crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${$xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
+{ crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup.sh >/dev/null 2>&1"; } | crontab -u root -
 
 # run the script
 # اجرای این اسکریپت
