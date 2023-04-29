@@ -132,7 +132,7 @@ fi
 python3 -m hiddifypanel backup
 cd /opt/hiddify-config/hiddify-panel/backup
 latest_file=\$(ls -t *.json | head -n1)
-rm -f /root/ac-backup.zip
+rm -f /root/ac-backup-h.zip
 zip /root/ac-backup-h.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_file
 
 EOF
