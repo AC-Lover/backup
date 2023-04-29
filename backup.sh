@@ -73,9 +73,9 @@ while [[ -z "$crontabs" ]]; do
     fi
 done
 
-if [[ "$xmh" == "y" ]]; then
+if [[ "$crontabs" == "y" ]]; then
 # remove cronjobs
-sudo crontab -l | grep -vE '/root/ac-backup.sh|/root/ac-backup.+\.sh' | crontab -
+sudo crontab -l | grep -vE '/root/ac-backup.+\.sh' | crontab -
 fi
 
 
@@ -91,7 +91,7 @@ else
 fi
 
 
-ZIP="zip -r /root/ac-backup-m.zip ${dir} /var/lib/marzban/*"
+ZIP="zip -r /root/ac-backup-m.zip ${dir}/* /var/lib/marzban/*"
 ACLover="marzban backup"
 
 # x-ui backup
@@ -166,7 +166,7 @@ EOL
 
 # run the script
 # اجرای این اسکریپت
-bash /root/ac-backup.sh
+bash "/root/ac-backup-${xmh}.sh"
 
 # Done
 # پایان اجرای اسکریپت
