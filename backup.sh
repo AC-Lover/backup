@@ -63,7 +63,7 @@ while [[ -z "$xmh" ]]; do
 done
 
 while [[ -z "$crontabs" ]]; do
-    read -p 'Would you like the previous crontabs to be cleared? [y|n] : ' crontabs
+    read -p 'Would you like the previous crontabs to be cleared? [y/n] : ' crontabs
     if [[ $crontabs == $'\0' ]]; then
         echo "Invalid input. Please choose y or n."
         unset crontabs
