@@ -67,7 +67,7 @@ while [[ -z "$crontabs" ]]; do
     if [[ $crontabs == $'\0' ]]; then
         echo "Invalid input. Please choose y or n."
         unset crontabs
-    elif [[ ! $xmh =~ ^[yn]$ ]]; then
+    elif [[ ! $crontabs =~ ^[yn]$ ]]; then
         echo "${crontabs} is not a valid option. Please choose y or n."
         unset crontabs
     fi
