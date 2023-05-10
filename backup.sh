@@ -162,7 +162,7 @@ EOL
 
 # Add cronjob
 # افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
-{ crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${$xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
+crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${$xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
 
 # run the script
 # اجرای این اسکریپت
