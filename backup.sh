@@ -91,7 +91,7 @@ else
 fi
 
 
-ZIP="zip -r /root/ac-backup-m.zip ${dir}/* /var/lib/marzban/*"
+ZIP="zip -r /root/ac-backup-m.zip ${dir}/* /var/lib/marzban/* /opt/marzban/.env"
 ACLover="marzban backup"
 
 # x-ui backup
