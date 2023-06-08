@@ -110,6 +110,10 @@ bash <(curl -Ls https://github.com/AC-Lover/backup/raw/main/backup.sh)
 
 ###
 
+<h1 align="left">Video tutorial</h1>
+
+https://github.com/AC-Lover/backup/assets/49290111/905c545c-caa9-4ad5-80d1-82c702fb3f2e
+
 
 ## Stargazers over time
 
