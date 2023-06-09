@@ -143,7 +143,7 @@ echo "Please choose m or x or h only !"
 exit 1
 fi
 
-export IP=$(hostname -I)
+export IP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 caption="${caption}\n\n${ACLover}\n<code>${IP}</code>\nCreated by @AC_Lover - https://github.com/AC-Lover/backup"
 
 # install zip
