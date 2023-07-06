@@ -100,6 +100,7 @@ if [ -d "/var/lib/marzban/mysql" ]; then
 
   sed -i -e 's/\s*=\s*/=/' -e 's/\s*:\s*/:/' -e 's/^\s*//' /opt/marzban/.env
 
+  docker exec marzban-mysql-1 bash -c "mkdir -p /var/lib/mysql/db-backup"
   source /opt/marzban/.env
 
     cat > "/var/lib/marzban/mysql/ac-backup.sh" <<EOL
@@ -109,21 +110,23 @@ USER="root"
 PASSWORD="$MYSQL_ROOT_PASSWORD"
 
 
-databases=`mysql --user=$USER --password=$PASSWORD -e "SHOW DATABASES;" | tr -d "| " | grep -v Database`
+databases=\$(mysql --user=\$USER --password=\$PASSWORD -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)
 
-for db in $databases; do
-    if [[ "$db" != "information_schema" ]] && [[ "$db" != "mysql" ]] && [[ "$db" != "performance_schema" ]] && [[ "$db" != "sys" ]] ; then
-        echo "Dumping database: $db"
-		mysqldump --force --opt --user=$USER --password=$PASSWORD --databases $db > /var/lib/marzban/mysql/db-backup/$db.sql
+for db in \$databases; do
+    if [[ "\$db" != "information_schema" ]] && [[ "\$db" != "mysql" ]] && [[ "\$db" != "performance_schema" ]] && [[ "\$db" != "sys" ]] ; then
+        echo "Dumping database: \$db"
+		mysqldump --force --opt --user=\$USER --password=\$PASSWORD --databases \$db > /var/lib/mysql/db-backup/\$db.sql
 
     fi
 done
 
 EOL
+chmod +x /var/lib/marzban/mysql/ac-backup.sh
 
 ZIP=$(cat <<EOF
-bash /var/lib/marzban/mysql/ac-backup.sh
-zip -r /root/ac-backup-m.zip ${dir}/* /var/lib/marzban/* /opt/marzban/.env /var/lib/marzban/mysql/db-backup/*
+docker exec marzban-mysql-1 bash -c "/var/lib/mysql/ac-backup.sh"
+zip -r /root/ac-backup-m.zip /opt/marzban/* /var/lib/marzban/* /opt/marzban/.env -x /var/lib/marzban/mysql/\*
+zip -r /root/ac-backup-m.zip /var/lib/marzban/mysql/db-backup/*
 rm -rf /var/lib/marzban/mysql/db-backup/*
 EOF
 )
@@ -194,6 +197,7 @@ sudo apt install zip -y
 # ارسال فایل پشتیبانی به تلگرام
 cat > "/root/ac-backup-${xmh}.sh" <<EOL
 $ZIP
+echo "$caption" | zip -z /root/ac-backup-${xmh}.zip
 curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
