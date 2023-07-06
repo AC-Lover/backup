@@ -197,7 +197,8 @@ sudo apt install zip -y
 # ارسال فایل پشتیبانی به تلگرام
 cat > "/root/ac-backup-${xmh}.sh" <<EOL
 $ZIP
-echo "$caption" | zip -z /root/ac-backup-${xmh}.zip
+echo -e "${caption}\n\n${ACLover}\n<code>${IP}</code>\nCreated by @AC_Lover - https://github.com/AC-Lover/backup" | sed 's/<code>//g;s/<\/code>//g' | sed -e 's/^\\n*//' -e 's/\\n*$//'
+ | zip -z /root/ac-backup-${xmh}.zip
 curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
