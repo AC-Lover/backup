@@ -141,8 +141,11 @@ ACLover="marzban backup"
 # ساخت فایل پشتیبانی برای نرم‌افزار X-UI و ذخیره آن در فایل ac-backup.zip
 elif [[ "$xmh" == "x" ]]; then
 
-if dbDir=$(find /etc -type d -iname "x-ui*" -print -quit); then
+if dbDir=$(find /etc /opt/freedom -type d -iname "x-ui*" -print -quit); then
   echo "The folder exists at $dbDir"
+  if [[ $dbDir == *"/opt/freedom/x-ui"* ]]; then
+     dbDir="${dbDir}/db/"
+  fi
 else
   echo "The folder does not exist."
   exit 1
