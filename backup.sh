@@ -115,7 +115,7 @@ databases=\$(mysql --user=\$USER --password=\$PASSWORD -e "SHOW DATABASES;" | tr
 for db in \$databases; do
     if [[ "\$db" != "information_schema" ]] && [[ "\$db" != "mysql" ]] && [[ "\$db" != "performance_schema" ]] && [[ "\$db" != "sys" ]] ; then
         echo "Dumping database: \$db"
-		mysqldump --force --opt --user=\$USER --password=\$PASSWORD --databases \$db > /var/lib/mysql/db-backup/\$db.sql
+		mysqldump -h 127.0.0.1 --force --opt --user=\$USER --password=\$PASSWORD --databases \$db > /var/lib/mysql/db-backup/\$db.sql
 
     fi
 done
