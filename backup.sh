@@ -215,7 +215,7 @@ cat > "/root/ac-backup-${xmh}.sh" <<EOL
 rm -rf /root/ac-backup-${xmh}.zip
 $ZIP
 echo -e "$comment" | zip -z /root/ac-backup-${xmh}.zip
-curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.telegram.org/bot${tk}/sendDocument
+curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmh}.zip" https://api.tlgr.org/bot${tk}/sendDocument
 EOL
 
 
