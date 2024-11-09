@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Bot token
-# گرفتن توکن ربات از کاربر و ذخیره آن در متغیر tk
 while [[ -z "$tk" ]]; do
     echo "Bot token: "
     read -r tk
@@ -12,7 +11,6 @@ while [[ -z "$tk" ]]; do
 done
 
 # Chat id
-# گرفتن Chat ID از کاربر و ذخیره آن در متغیر chatid
 while [[ -z "$chatid" ]]; do
     echo "Chat id: "
     read -r chatid
@@ -26,12 +24,10 @@ while [[ -z "$chatid" ]]; do
 done
 
 # Caption
-# گرفتن عنوان برای فایل پشتیبان و ذخیره آن در متغیر caption
 echo "Caption (for example, your domain, to identify the database file more easily): "
 read -r caption
 
 # Cronjob
-# تعیین زمانی برای اجرای این اسکریپت به صورت دوره‌ای
 while true; do
     echo "Cronjob (minutes and hours) (e.g : 30 6 or 0 12) : "
     read -r minute hour
@@ -54,7 +50,6 @@ done
 
 
 # x-ui or marzban or hiddify
-# گرفتن نوع نرم افزاری که می‌خواهیم پشتیبانی از آن بگیریم و ذخیره آن در متغیر xmh
 while [[ -z "$xmh" ]]; do
     echo "x-ui or marzban or hiddify? [x/m/h] : "
     read -r xmh
@@ -86,7 +81,6 @@ fi
 
 
 # m backup
-# ساخت فایل پشتیبانی برای نرم‌افزار Marzban و ذخیره آن در فایل ac-backup.zip
 if [[ "$xmh" == "m" ]]; then
 
 if dir=$(find /opt /root -type d -iname "marzban" -print -quit); then
@@ -138,7 +132,6 @@ fi
 ACLover="marzban backup"
 
 # x-ui backup
-# ساخت فایل پشتیبانی برای نرم‌افزار X-UI و ذخیره آن در فایل ac-backup.zip
 elif [[ "$xmh" == "x" ]]; then
 
 if dbDir=$(find /etc /opt/freedom -type d -iname "x-ui*" -print -quit); then
@@ -162,7 +155,6 @@ ZIP="zip /root/ac-backup-x.zip ${dbDir}/x-ui.db ${configDir}/config.json"
 ACLover="x-ui backup"
 
 # hiddify backup
-# ساخت فایل پشتیبانی برای نرم‌افزار Hiddify و ذخیره آن در فایل ac-backup.zip
 elif [[ "$xmh" == "h" ]]; then
 
 if ! find /opt/hiddify-manager/hiddify-panel/ -type d -iname "backup" -print -quit; then
@@ -206,11 +198,9 @@ comment=$(echo -e "$caption" | sed 's/<code>//g;s/<\/code>//g')
 comment=$(trim "$comment")
 
 # install zip
-# نصب پکیج zip
 sudo apt install zip -y
 
 # send backup to telegram
-# ارسال فایل پشتیبانی به تلگرام
 cat > "/root/ac-backup-${xmh}.sh" <<EOL
 rm -rf /root/ac-backup-${xmh}.zip
 $ZIP
@@ -220,13 +210,10 @@ EOL
 
 
 # Add cronjob
-# افزودن کرانجاب جدید برای اجرای دوره‌ای این اسکریپت
 { crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${xmh}.sh >/dev/null 2>&1"; } | crontab -u root -
 
 # run the script
-# اجرای این اسکریپت
 bash "/root/ac-backup-${xmh}.sh"
 
 # Done
-# پایان اجرای اسکریپت
 echo -e "\nDone\n"
