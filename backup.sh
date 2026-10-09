@@ -221,8 +221,14 @@ if [ -f "/usr/local/bin/pasarguard" ]; then
   backupCommand="/usr/local/bin/pasarguard backup"
 elif command -v pasarguard >/dev/null 2>&1; then
   backupCommand="pasarguard backup"
+elif [ -f "/usr/local/bin/pasargad" ]; then
+  backupCommand="/usr/local/bin/pasargad backup"
+elif command -v pasargad >/dev/null 2>&1; then
+  backupCommand="pasargad backup"
 elif [ -f "${dir}/pasarguard.sh" ]; then
   backupCommand="bash ${dir}/pasarguard.sh backup"
+elif [ -f "${dir}/pasargad.sh" ]; then
+  backupCommand="bash ${dir}/pasargad.sh backup"
 else
   backupCommand=""
 fi
@@ -237,7 +243,7 @@ fi
 if [ -n "\$latest_file" ]; then
   cp "\$latest_file" /root/ac-backup-p.zip
 else
-  zip -r /root/ac-backup-p.zip ${dir}/* /var/lib/pasarguard/* ${dir}/.env -x "${dir}/backup/*" 2>/dev/null
+  zip -r /root/ac-backup-p.zip ${dir}/* /var/lib/pasarguard/* /var/lib/pasargad/* ${dir}/.env -x "${dir}/backup/*" 2>/dev/null
 fi
 
 EOF
