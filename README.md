@@ -12,7 +12,7 @@
 
 ###
 
-<p align="left">With this script, you can backup important information such as database from the x-ui, marzban, and hiddify panels and send it to Telegram with the help of the Telegram bot so that it is always available!</p>
+<p align="left">With this script, you can backup important information such as database from the x-ui, s-ui, marzban, hiddify, and pasarguard panels and send it to Telegram with the help of the Telegram bot so that it is always available!</p>
 
 ###
 
@@ -74,7 +74,7 @@ bash <(curl -Ls https://github.com/AC-Lover/backup/raw/main/backup.sh)
 
 ###
 
-<p align="left">The next step will ask you which panel you want to backup<br>You have to choose one from marzbn, x-ui, and hiddify <br>The value of m means marzban, the value of x means x-ui, and the value of h means hiddify <br>Enter an option between x/m/h as per your requirement</p>
+<p align="left">The next step will ask you which panel you want to backup<br>You have to choose one from marzban, x-ui, s-ui, hiddify, and pasarguard <br>The value of m means marzban, the value of x means x-ui, the value of s means s-ui, the value of h means hiddify, and the value of p means pasarguard <br>Enter an option between x/s/m/h/p as per your requirement</p>
 
 ###
 

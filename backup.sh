@@ -50,15 +50,15 @@ done
 
 
 
-while [[ -z "$xmhs" ]]; do
-    echo "x-ui or s-ui or marzban or hiddify? [x/s/m/h] : "
-    read -r xmhs
-    if [[ $xmhs == $'\0' ]]; then
-        echo "Invalid input. Please choose x,s, m or h."
-        unset xmhs
-    elif [[ ! $xmhs =~ ^[xmhs]$ ]]; then
-        echo "${xmhs} is not a valid option. Please choose x, m or h."
-        unset xmhs
+while [[ -z "$xmhsp" ]]; do
+    echo "x-ui or s-ui or marzban or hiddify or pasarguard? [x/s/m/h/p] : "
+    read -r xmhsp
+    if [[ $xmhsp == $'\0' ]]; then
+        echo "Invalid input. Please choose x, s, m, h or p."
+        unset xmhsp
+    elif [[ ! $xmhsp =~ ^[xmhsp]$ ]]; then
+        echo "${xmhsp} is not a valid option. Please choose x, s, m, h or p."
+        unset xmhsp
     fi
 done
 
@@ -79,7 +79,7 @@ sudo crontab -l | grep -vE '/root/ac-backup.+\.sh' | crontab -
 fi
 
 
-if [[ "$xmhs" == "m" ]]; then
+if [[ "$xmhsp" == "m" ]]; then
 
 if dir=$(find /opt /root -type d -iname "marzban" -print -quit); then
   echo "The folder exists at $dir"
@@ -141,13 +141,12 @@ fi
 
 ACLover="marzban backup"
 
-elif [[ "$xmhs" == "x" || "$xmhs" == "s" ]]; then
+elif [[ "$xmhsp" == "x" || "$xmhsp" == "s" ]]; then
 
 ACLover=""
 dbDir=$(find /etc /opt/freedom /usr/local \
            -type d \( -iname "x-ui*" -o -iname "s-ui" \) \
            -print -quit 2>/dev/null)
-
 
 if [[ -n "${dbDir}" ]]; then
   echo "The folder exists at $dbDir"
@@ -174,10 +173,10 @@ else
   configDir=""
 fi
 
-ZIP="zip /root/ac-backup-${xmhs}.zip ${dbDir} ${configDir}"
+ZIP="zip /root/ac-backup-${xmhsp}.zip ${dbDir} ${configDir}"
 
 
-elif [[ "$xmhs" == "h" ]]; then
+elif [[ "$xmhsp" == "h" ]]; then
 
 if ! find /opt/hiddify-manager/hiddify-panel/ -type d -iname "backup" -print -quit; then
   echo "The folder does not exist."
@@ -208,8 +207,45 @@ zip /root/ac-backup-h.zip /opt/hiddify-manager/hiddify-panel/backup/\$latest_fil
 EOF
 )
 ACLover="hiddify backup"
+
+elif [[ "$xmhsp" == "p" ]]; then
+
+if dir=$(find /opt /root -type d \( -iname "pasarguard" -o -iname "pasargad" \) -print -quit 2>/dev/null); then
+  echo "The folder exists at $dir"
 else
-echo "Please choose m or x or s or h only !"
+  echo "The folder does not exist."
+  exit 1
+fi
+
+if [ -f "/usr/local/bin/pasarguard" ]; then
+  backupCommand="/usr/local/bin/pasarguard backup"
+elif command -v pasarguard >/dev/null 2>&1; then
+  backupCommand="pasarguard backup"
+elif [ -f "${dir}/pasarguard.sh" ]; then
+  backupCommand="bash ${dir}/pasarguard.sh backup"
+else
+  backupCommand=""
+fi
+
+ZIP=$(cat <<EOF
+
+if [ -n "$backupCommand" ]; then
+  $backupCommand
+  latest_file=\$(ls -t ${dir}/backup/*.zip 2>/dev/null | head -n1)
+fi
+
+if [ -n "\$latest_file" ]; then
+  cp "\$latest_file" /root/ac-backup-p.zip
+else
+  zip -r /root/ac-backup-p.zip ${dir}/* /var/lib/pasarguard/* ${dir}/.env -x "${dir}/backup/*" 2>/dev/null
+fi
+
+EOF
+)
+ACLover="pasarguard backup"
+
+else
+echo "Please choose m or x or s or h or p only !"
 exit 1
 fi
 
@@ -229,20 +265,20 @@ comment=$(trim "$comment")
 
 sudo apt install zip -y
 
-cat > "/root/ac-backup-${xmhs}.sh" <<EOL
+cat > "/root/ac-backup-${xmhsp}.sh" <<EOL
 #!/bin/bash
 
-rm -f /root/ac-backup-${xmhs}.zip
+rm -f /root/ac-backup-${xmhsp}.zip
 $ZIP
-echo -e "$comment" | zip -z /root/ac-backup-${xmhs}.zip
-curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmhs}.zip" https://api.telegram.org/bot${tk}/sendDocument
+echo -e "$comment" | zip -z /root/ac-backup-${xmhsp}.zip
+curl -F chat_id="${chatid}" -F caption=\$'${caption}' -F parse_mode="HTML" -F document=@"/root/ac-backup-${xmhsp}.zip" https://api.telegram.org/bot${tk}/sendDocument
 EOL
 
 
 
-{ crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${xmhs}.sh >/dev/null 2>&1"; } | crontab -u root -
+{ crontab -l -u root; echo "${cron_time} /bin/bash /root/ac-backup-${xmhsp}.sh >/dev/null 2>&1"; } | crontab -u root -
 
 
-bash "/root/ac-backup-${xmhs}.sh"
+bash "/root/ac-backup-${xmhsp}.sh"
 
 echo -e "\nDone\n"
